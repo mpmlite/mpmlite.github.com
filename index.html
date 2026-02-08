@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="MPM Lite is a new hybrid Lagrangian/Eulerian method that eliminates the need for particle-based quadrature at solve time. MPM Lite achieves significant speedups in implicit settings while preserving the robustness and versatility of traditional material point methods across diverse materials.">
+  <meta name="keywords" content="MPM, Material Point Method, Computer Graphics, Simulation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MPM Lite: Linear Kernels and Integration without Particles</title>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-W80K4VBNZ1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-W80K4VBNZ1');
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./static/js/video_comparison.js"></script>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body" style="padding-bottom: 24px;">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">MPM Lite: Linear Kernels and Integration without Particles
+            </h1>
+            <h2 class="subtitle is-size-4 publication-venue"></h2>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                Anonymous (<u>We will release code upon the acceptance of paper</u>)
+              </span>
+            </div>
+            <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="" class="external-link button is-normal is-rounded is-dark">  
+                  <span class="icon">
+                      <svg class="svg-inline--fa fa-file-pdf fa-w-12" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-pdf" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M181.9 256.1c-5-16-4.9-46.9-2-46.9 8.4 0 7.6 36.9 2 46.9zm-1.7 47.2c-7.7 20.2-17.3 43.3-28.4 62.7 18.3-7 39-17.2 62.9-21.9-12.7-9.6-24.9-23.4-34.5-40.8zM86.1 428.1c0 .8 13.2-5.4 34.9-40.2-6.7 6.3-29.1 24.5-34.9 40.2zM248 160h136v328c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V24C0 10.7 10.7 0 24 0h200v136c0 13.2 10.8 24 24 24zm-8 171.8c-20-12.2-33.3-29-42.7-53.8 4.5-18.5 11.6-46.6 6.2-64.2-4.7-29.4-42.4-26.5-47.8-6.8-5 18.3-.4 44.1 8.1 77-11.6 27.6-28.7 64.6-40.8 85.8-.1 0-.1.1-.2.1-27.1 13.9-73.6 44.5-54.5 68 5.6 6.9 16 10 21.5 10 17.9 0 35.7-18 61.1-61.8 25.8-8.5 54.1-19.1 79-23.2 21.7 11.8 47.1 19.5 64 19.5 29.2 0 31.2-32 19.7-43.4-13.9-13.6-54.3-9.7-73.6-7.2zM377 105L279 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-74.1 255.3c4.1-2.7-2.5-11.9-42.8-9 37.1 15.8 42.8 9 42.8 9z"></path></svg>
+                  </span>
+                  <span>Paper (Google Drive)</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=3IBTTihDH8s" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <svg class="svg-inline--fa fa-youtube fa-w-18" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>
+                  </span>
+                  <span>Video (Youtube)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="./assets/teaser.png">
+      <h3 class="subtitle has-text-centered">
+        MPM Lite is a hybrid Lagrangian/Eulerian method that removes particle-based quadrature at solve time. It achieves <strong
+        style="background: linear-gradient(to right, #FF4E50, #FF0000, #8B0000); -webkit-background-clip: text; color: transparent; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);"
+        >15.9✖️</strong> speedup over implicit MPM, and <strong
+        style="background: linear-gradient(to right, #FF4E50, #FF0000, #8B0000); -webkit-background-clip: text; color: transparent; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);"
+        >
+      1.69✖️</strong> speedup over explicit MPM.
+      </h3>
+    </div>
+  </div>
+</section>
+
+  <section class="section" style="padding-top: 24px; padding-bottom: 24px;">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <!-- <img src="./assets/teaser.png" /> -->
+          <div class="content has-text-justified">
+            <p>
+                In this paper, we introduce MPM Lite, a new hybrid Lagrangian/Eulerian method that eliminates the need for particle-based quadrature at solve time. Standard MPM practices suffer from a performance bottleneck where expensive implicit solves are proportional to particle-per-cell (PPC) counts due to the the choices of particle-based quadrature and wide-stencil kernels. In contrast, MPM Lite treats particles primarily as carriers of kinematic state and material history. By conceptualizing the background Cartesian grid as a voxel hexahedral mesh, we resample particle states onto fixed-location quadrature points using efficient, compact linear kernels. This architectural shift allows force assembly and the entire time-integration process to proceed without accessing particles, making the solver complexity no longer relate to particles. At the core of our method is a novel stress transfer and stretch reconstruction strategy. To avoid non-physical averaging of deformation gradients, we resample the extensive Kirchhoff stress and derive a rotation-free deformation reference solution, which naturally supports an optimization-based incremental potential formulation. Consequently, MPM Lite can be implemented as modular resampling units coupled with an FEM-style integration module, enabling the direct use of off-the-shelf nonlinear solvers, preconditioners, and unambiguous boundary conditions. We demonstrate through extensive experiments that MPM Lite preserves the robustness and versatility of traditional MPM across diverse materials while delivering significant speedups in implicit settings and improving explicit settings at the same time.
+            </p>
+          </div>
+          <!-- Paper video. -->
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-five-fifths">
+              <div class="publication-video">
+                <iframe src="https://drive.google.com/file/d/1f--gF0aCSR9qtt4GW5AK3qgBVYN_SmAj/preview"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+          <!--/ Paper video. -->
+      </div>
+    </div>
+  </section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Method Overview</h2>
+    <h3 class="title is-4">Motivation</h3>
+    <p>Classic MPM suffers from several structural burdens that significantly hinder its performance:
+      <ul style="list-style-type: disc; list-style-position: inside;">
+        <li> Classic MPM relies on <b>wide-stencil kernels</b> (e.g. quadratic kernel) to avoid numerical fracture and cell-crossing instabilities. </li>
+        <li> The cost of implicit solve directly scales with the number of particles-per-cell due to the use of <b>particle-based quadrature</b>. </li>
+      </ul>
+      To solve these issues, we propose MPM Lite, a novel approach that revisits the formulation of MPM and uses <b>linear kernels</b> and fixed-location <b>cell centers as quadrature points</b> for efficient computation.
+    </p>
+    <br/>
+    <h3 class="title is-4">Formulation</h3>
+    <p>
+      The procedure for a single time-step simulation in MPM Lite can be described as consisting of three stages: <b class="sc">Unload</b>, <b class="sc">Integrate</b>, and <b class="sc">Load</b>.
+    </p>
+    <h4 class="title is-5 sc" style="padding-top: 20px;">Unload</h4>
+    <p>
+      The first step scatters the particles' physical quantities to the cell centers so that these centers can serve as quadrature points in the subsequent integration stage. To this end, in addition to the usual transfer of mass, momentum, and velocity gradients, the extensive <b>Kirchhoff stress</b> is also transferred from particles to the cell centers. The subsequent kinematic transfer between grid nodes and cell centers then follows the standard APIC-based schemes. Both transfers employ a multilinear kernel, whose weights remain constant during the center-to-grid pass.
+    </p>
+    <img src="./assets/unload1.jpg" />
+    
+    <h4 class="title is-5 sc" style="padding-top: 20px;">Integrate</h4>
+    <p>
+      For explicit integration, computing internal forces is straightforward, so here we focus on the implicit case, say an optimization-based time integration formulation for backward Euler. A natural temptation will be implicit stress as we already carry cell-center stress. However, this will lead to non-symmetric hessian and is unsuitable for implicit solvers. So, we introduce a new incremental potential optimization formulation based on a <b>custom rotation-free stretch reference</b>.
+    </p>
+    <img src="./assets/integrate.jpg" />
+    <p>
+      Concretely, we reconstruct the only the principle stretches of the deformation gradient (i.e. F=S), dropping the rotation part from polar decomposition, as isotropic elastic energy and its tangent depend on F only through its stretch. For common isotropic materials, we derive closed-form solutions for solving principal stretches from given stress. Once the stretch reference or the deformation gradient is obtained, MPM Lite proceeds to solve the problem with standard implicit solvers.
+    </p>
+    <h4 class="title is-5 sc" style="padding-top: 20px;">Load</h4>
+    <p>
+      Transferring data back from grid nodes to cell centers, and subsequently from centers to particles, is straightforward and follows the standard APIC-based transfer schemes.
+    </p>
+    <br/>
+    <h3 class="title is-4">Error Analysis</h3>
+    <p>
+      We theoretically prove that under reasonable Lipschitz smoothness assumptions on local velocity fields, the discrepancy in velocity and velocity gradient between MPM Lite and classic B-sline APIC scheme are minimal: they are both O(Δ𝑥^2) with respect to the grid spacing Δ𝑥. Please see our paper for details.
+    </p>
+  </div>
+</section>
+
+<section class="hero">
+  <div class="hero-body is-light">
+    <div class="container">
+    <h2 class="title is-3 has-text-centered">Results</h2>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-nailong">
+          <video poster="" id="nailong" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/nailong.crop.mp4">
+          </video>
+        </div>
+        <div class="item item-sandwater">
+          <video poster="" id="sandwater" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/sand_water.mp4">
+          </video>
+        </div>
+        <div class="item item-brownie">
+          <video poster="" id="brownie" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/brownie.mp4">
+          </video>
+        </div>
+        <div class="item item-noodles">
+          <video poster="" id="noodles" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/noodles.crop.mp4">
+          </video>
+        </div>
+      </div>
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-snow">
+          <video poster="" id="snow" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/snow.mp4">
+          </video>
+        </div>
+        <div class="item item-wheel">
+          <video poster="" id="wheel" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/wheel.mp4">
+          </video>
+        </div>
+        <div class="item item-candy">
+          <video poster="" id="candy" autoplay controls muted loop playsinline height="100%">
+            <source src="./assets/candy.mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top: 0px;">
+  <div class="container is-max-desktop">
+    <h3 class="title is-4">Comparison</h3>
+    <img src="./assets/comp.jpg" />
+    <p>
+      While the primary advantage of Lite lies in its formulation for implicit integration, we include explicit comparison here just for completeness. In the Jelly Falling example, MPM Lite achieves a <b>1.69×</b> speedup over classic explicit MPM and compare favorably with CK-MPM. We then proceed to demonstrate the core advantage of MPM Lite: its independence from particles during implicit solves. In MPM simulations, a high number of PPC is well known to be essential for suppressing numerical fracture and ensuring stable material behavior, and practical simulations often require PPC values exceeding 20. However, in traditional implicit MPM, the computational cost increases significantly as PPC grows. In contrast, MPM Lite remains insensitive to PPC and achieves up to a <b>15.9×</b> speedup at 24 PPC. 
+    </p>
+  </div>
+</section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website is constructed using the source code provided by <a
+                href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>, and we are grateful for their template.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<script>
+        let resizeObserver;
+
+        function getDynamicHeight() {
+            if (window.matchMedia('(max-width: 419px)').matches) {
+                return 110;
+            } else if (window.matchMedia('(min-width: 420px) and (max-width: 800px)').matches) {
+                return 150;
+            } else {
+                return 248;
+            }
+        }
+
+        function adjustItemWidth(container) {
+            var video = container.querySelector('video');
+            var item = container; //container.querySelector('.slider-item');
+            var ch = getDynamicHeight();
+
+            if (video.readyState >= 1) {
+              item.style.width = video.videoWidth * (ch / video.videoHeight) + 'px';
+            } else {
+                video.addEventListener('loadedmetadata', function() {
+                  item.style.width = video.videoWidth * (ch / video.videoHeight) + 'px';
+                });
+
+                video.addEventListener('resize', function() {
+                  item.style.width = video.videoWidth * (ch / video.videoHeight) + 'px';
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var containers = document.querySelectorAll('.item');
+            containers.forEach(adjustItemWidth);
+
+            resizeObserver = new ResizeObserver(function(entries) {
+                entries.forEach(function(entry) {
+                  adjustItemWidth(entry.target);
+                });
+            });
+
+            containers.forEach(function(container) {
+                resizeObserver.observe(container);
+            });
+
+            window.addEventListener('resize', function() {
+                containers.forEach(adjustItemWidth);
+            });
+        });
+</script>
+
+</body>
+
+</html>
