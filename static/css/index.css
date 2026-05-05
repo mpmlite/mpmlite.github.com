@@ -70,7 +70,7 @@ body {
 }
 
 .publication-authors a {
-   color: hsl(204, 86%, 53%) !important;
+   color: inherit !important;
 }
 
 .publication-authors a:hover {
@@ -79,6 +79,48 @@ body {
 
 .author-block {
   display: inline-block;
+}
+
+.publication-affiliations {
+  margin-top: 0.35rem;
+  line-height: 1.8;
+}
+
+.affiliation-block {
+  margin: 0 0.18rem;
+  white-space: nowrap;
+}
+
+.affiliation-logo {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.12em;
+  margin-right: 0.32em;
+  overflow: hidden;
+  vertical-align: -0.18em;
+  width: 1.12em;
+}
+
+.affiliation-logo img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
+.affiliation-logo-ucla,
+.affiliation-logo-ucsd {
+  border-radius: 3px;
+}
+
+.affiliation-logo-utah img {
+  transform: scale(1.12);
+}
+
+.affiliation-logo-tri {
+  border-radius: 3px;
 }
 
 .publication-banner img {
